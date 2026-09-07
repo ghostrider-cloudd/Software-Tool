@@ -1,0 +1,789 @@
+﻿@using System.IO.Ports
+@using System.Timers
+@implements IDisposable
+@inherits LayoutComponentBase
+<div class="rfd-app @(isDarkTheme ? "dark-theme" : "light-theme")">
+
+    <!-- =====================================================
+         LEFT SIDEBAR
+         ===================================================== -->
+
+    <aside class="rfd-sidebar">
+
+        <!-- LOGO -->
+        <div class="rfd-logo">
+    <img src="images/dtri_logo.png"
+         alt="Deshila Technology Research Institute"
+         class="dtri-logo" />
+</div>
+
+
+        <!-- CONNECTION TYPE -->
+        <div class="connection-tabs">
+
+            <button type="button"
+                    class="connection-tab @(connectionType == "Serial" ? "active" : "")"
+                    @onclick='() => SelectConnectionType("Serial")'>
+
+                Serial
+
+            </button>
+
+            <button type="button"
+                    class="connection-tab @(connectionType == "TCP" ? "active" : "")"
+                    @onclick='() => SelectConnectionType("TCP")'>
+
+                TCP
+
+            </button>
+
+        </div>
+
+
+        <!-- SERIAL CONNECTION -->
+        @if (connectionType == "Serial")
+        {
+            <div class="connection-form">
+
+                <label for="serial-port">
+                    Serial Port
+                </label>
+
+                <select id="serial-port"
+        class="@(connectedPorts.Contains(selectedPort) ? "connected-port" : "")"
+        @bind="selectedPort">
+
+    @foreach (var port in availablePorts)
+    {
+        <option value="@port"
+                style="font-weight: @(connectedPorts.Contains(port) ? "bold" : "normal")">
+            @port
+        </option>
+    }
+
+</select>
+
+
+                <label for="baudrate">
+                    Baudrate
+                </label>
+
+                <select id="baudrate"
+                        @bind="selectedBaudrate">
+
+                    @foreach (var baud in baudRates)
+                    {
+                        <option value="@baud">
+                            @baud
+                        </option>
+                    }
+
+                </select>
+
+
+                <button type="button"
+                        class="connect-button @(isConnected ? "connected" : "")"
+                        @onclick="ToggleConnection">
+
+                    @if (isConnected)
+                    {
+                        <span>Disconnect</span>
+                    }
+                    else
+                    {
+                        <span>Connect</span>
+                    }
+
+                </button>
+
+            </div>
+        }
+
+
+        <!-- TCP CONNECTION -->
+        @if (connectionType == "TCP")
+        {
+            <div class="connection-form">
+
+                <label for="tcp-address">
+                    IP Address
+                </label>
+
+                <input id="tcp-address"
+                       class="connection-input"
+                       type="text"
+                       @bind="tcpAddress"
+                       placeholder="192.168.1.100" />
+
+
+                <label for="tcp-port">
+                    Port
+                </label>
+
+                <input id="tcp-port"
+                       class="connection-input"
+                       type="number"
+                       @bind="tcpPort" />
+
+
+                <button type="button"
+                        class="connect-button @(isConnected ? "connected" : "")"
+                        @onclick="ToggleConnection">
+
+                    @if (isConnected)
+                    {
+                        <span>Disconnect</span>
+                    }
+                    else
+                    {
+                        <span>Connect</span>
+                    }
+
+                </button>
+
+            </div>
+        }
+
+
+        <!-- NAVIGATION -->
+        <nav class="rfd-navigation">
+
+            <button type="button"
+                    class="rfd-nav-item @(activeSection == "Settings" ? "selected" : "")"
+                    @onclick='() => SelectSection("Settings")'>
+
+                <span class="nav-icon">
+                    ⚙
+                </span>
+
+                <span>
+                    Settings
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="rfd-nav-item @(activeSection == "Terminal" ? "selected" : "")"
+                    @onclick='() => SelectSection("Terminal")'>
+
+                <span class="nav-icon">
+                    ⌨
+                </span>
+
+                <span>
+                    Terminal
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="rfd-nav-item @(activeSection == "Firmware" ? "selected" : "")"
+                    @onclick='() => SelectSection("Firmware")'>
+
+                <span class="nav-icon">
+                    ▣
+                </span>
+
+                <span>
+                    Firmware
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="rfd-nav-item @(activeSection == "RSSI" ? "selected" : "")"
+                    @onclick='() => SelectSection("RSSI")'>
+
+                <span class="nav-icon">
+                    ▮
+                </span>
+
+                <span>
+                    RSSI
+                </span>
+
+            </button>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CENTER MAIN AREA
+         ===================================================== -->
+
+    <main class="rfd-main">
+
+        <!-- HEADER -->
+        <div class="settings-header">
+
+            <span>
+                @activeSection
+            </span>
+
+
+            <!-- THEME SWITCH -->
+            <div class="theme-switch-wrapper">
+
+                <span class="theme-label">
+                    ☀
+                </span>
+
+
+                <label class="theme-switch"
+                       title="Toggle light/dark theme">
+
+                    <input type="checkbox"
+                           @bind="isDarkTheme" />
+
+                    <span class="theme-slider"></span>
+
+                </label>
+
+
+                <span class="theme-label">
+                    ☾
+                </span>
+
+            </div>
+
+        </div>
+
+
+        @if (activeSection == "Settings")
+        {
+            <!-- DEVICE TOOLBAR -->
+            <div class="settings-toolbar">
+
+                <select class="device-select"
+                        aria-label="Device">
+
+                    <option value="">
+                    </option>
+
+                </select>
+
+
+                <button type="button"
+                        class="tool-button">
+
+                    Remote Scan
+
+                </button>
+
+            </div>
+
+
+            <!-- SETTINGS ACTIONS -->
+            <div class="settings-actions">
+
+                <button type="button"
+                        class="tool-button">
+
+                    Read
+
+                </button>
+
+
+                <button type="button"
+                        class="tool-button">
+
+                    Write All
+
+                </button>
+
+
+                <button type="button"
+                        class="tool-button">
+
+                    Import
+
+                </button>
+
+
+                <button type="button"
+                        class="tool-button">
+
+                    Export
+
+                </button>
+
+
+                <button type="button"
+                        class="tool-button">
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+            @if (!isConnected)
+            {
+                <div class="empty-state">
+                    Connect to your RFD to get started
+                </div>
+            }
+        }
+        else if (activeSection == "Terminal")
+        {
+            <div class="section-placeholder">
+                Terminal
+            </div>
+        }
+        else if (activeSection == "Firmware")
+        {
+            <div class="section-placeholder">
+                Firmware
+            </div>
+        }
+        else if (activeSection == "RSSI")
+        {
+            <div class="section-placeholder">
+                RSSI
+            </div>
+        }
+
+    </main>
+
+
+    <!-- =====================================================
+         RIGHT SERIAL OUTPUT
+         ===================================================== -->
+
+    <!-- =====================================================
+     RIGHT SERIAL MONITOR + INFORMATION
+     ===================================================== -->
+
+<aside class="serial-output">
+
+    <!-- ================= SERIAL MONITOR - 60% ================= -->
+
+    <div class="serial-monitor-panel">
+
+        <div class="serial-output-title">
+            Serial Monitor:
+        </div>
+
+        <div class="serial-monitor-content">
+            @if (!string.IsNullOrWhiteSpace(serialOutput))
+            {
+                <pre>@serialOutput</pre>
+            }
+            else
+            {
+                <div class="serial-monitor-empty">
+                    No serial data
+                </div>
+            }
+        </div>
+
+    </div>
+
+
+    <!-- ================= INFORMATION - 40% ================= -->
+
+    <div class="serial-information-panel">
+
+        <div class="information-header">
+
+            <span>
+                Information
+            </span>
+
+            <button type="button"
+                    class="information-clear-button"
+                    @onclick="ClearSerialInformation">
+                Clear
+            </button>
+
+        </div>
+
+
+        <div class="information-content">
+
+            @if (!string.IsNullOrWhiteSpace(serialStatusMessage))
+            {
+                <div class="serial-info-box @(serialStatusType)">
+
+                    <div class="serial-info-icon">
+
+                        @if (serialStatusType == "error")
+                        {
+                            <span>⚠</span>
+                        }
+                        else if (serialStatusType == "warning")
+                        {
+                            <span>!</span>
+                        }
+                        else if (serialStatusType == "success")
+                        {
+                            <span>✓</span>
+                        }
+                        else
+                        {
+                            <span>●</span>
+                        }
+
+                    </div>
+
+
+                    <div class="serial-info-content">
+
+                        <div class="serial-info-title">
+                            @serialStatusTitle
+                        </div>
+
+                        <div class="serial-info-message">
+                            @serialStatusMessage
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="information-empty">
+                    No information
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</aside>
+
+</div>
+
+
+@code {
+
+    /* =====================================================
+       THEME
+       ===================================================== */
+
+    private bool isDarkTheme = true;
+
+    private string serialStatusTitle = "Serial Status";
+private string serialStatusMessage = "";
+private string serialStatusType = "info";
+
+private string serialOutput = "";
+
+
+    /* =====================================================
+       CONNECTION
+       ===================================================== */
+
+    private string connectionType = "Serial";
+
+private bool isConnected = false;
+
+private string selectedPort = "";
+
+private int selectedBaudrate = 57600;
+
+private string tcpAddress = "192.168.1.100";
+
+private int tcpPort = 5000;
+
+private List<string> availablePorts = new();
+private Timer? portCheckTimer;
+private HashSet<string> connectedPorts = new();
+private SerialPort? serialPort;
+protected override void OnInitialized()
+{
+    CheckSerialPorts();
+
+    portCheckTimer = new Timer(1000);
+    portCheckTimer.Elapsed += CheckSerialPortsTimer;
+    portCheckTimer.AutoReset = true;
+    portCheckTimer.Start();
+}
+
+private void ShowSerialStatus(
+    string title,
+    string message,
+    string type = "info")
+{
+    serialStatusTitle = title;
+    serialStatusMessage = message;
+    serialStatusType = type;
+
+    InvokeAsync(StateHasChanged);
+}
+
+private void ClearSerialInformation()
+{
+    serialStatusTitle = "Serial Status";
+    serialStatusMessage = "";
+    serialStatusType = "info";
+
+    StateHasChanged();
+}
+
+
+private void CheckSerialPorts()
+{
+    var ports = SerialPort.GetPortNames()
+                          .OrderBy(p => p)
+                          .ToList();
+
+    availablePorts = ports;
+
+    connectedPorts.Clear();
+
+    // Only the serial port that our application
+    // has actually opened is considered connected.
+    if (serialPort != null &&
+        serialPort.IsOpen &&
+        !string.IsNullOrEmpty(serialPort.PortName))
+    {
+        connectedPorts.Add(serialPort.PortName);
+    }
+
+    if (!availablePorts.Contains(selectedPort))
+    {
+        selectedPort = availablePorts.FirstOrDefault() ?? "";
+    }
+}
+
+private void CheckSerialPortsTimer(object? sender, ElapsedEventArgs e)
+{
+    InvokeAsync(() =>
+    {
+        CheckSerialPorts();
+        StateHasChanged();
+    });
+}
+
+    private readonly List<int> baudRates =
+    [
+        9600,
+        19200,
+        38400,
+        57600,
+        115200
+    ];
+
+
+    /* =====================================================
+       NAVIGATION
+       ===================================================== */
+
+    private string activeSection = "Settings";
+
+
+    /* =====================================================
+       CONNECTION TYPE
+       ===================================================== */
+
+    private void SelectConnectionType(string type)
+    {
+        connectionType = type;
+
+        if (isConnected)
+        {
+            isConnected = false;
+        }
+    }
+    
+
+    /* =====================================================
+       CONNECTION
+       ===================================================== */
+
+    private void ToggleConnection()
+{
+    if (isConnected)
+    {
+        DisconnectSerial();
+    }
+    else
+    {
+        ConnectSerial();
+    }
+}
+
+private void ConnectSerial()
+{
+    try
+    {
+        if (string.IsNullOrWhiteSpace(selectedPort))
+        {
+            ShowSerialStatus(
+                "No COM Port Selected",
+                "Please select an available COM port before connecting.",
+                "warning");
+
+            return;
+        }
+
+        // Make sure the selected port still exists
+        if (!SerialPort.GetPortNames().Contains(selectedPort))
+        {
+            ShowSerialStatus(
+                "COM Port Unavailable",
+                $"{selectedPort} is no longer available. Please select another COM port.",
+                "error");
+
+            CheckSerialPorts();
+            return;
+        }
+
+        serialPort = new SerialPort(
+            selectedPort,
+            selectedBaudrate,
+            Parity.None,
+            8,
+            StopBits.One
+        );
+
+        serialPort.DataReceived += SerialPort_DataReceived;
+        serialPort.Open();
+
+        isConnected = serialPort.IsOpen;
+
+        if (isConnected)
+        {
+            ShowSerialStatus(
+                "Connected",
+                $"Connected to {selectedPort} at {selectedBaudrate} baud.",
+                "success");
+        }
+        else
+        {
+            ShowSerialStatus(
+                "Connection Failed",
+                $"Unable to open {selectedPort}.",
+                "error");
+        }
+    }
+    catch (UnauthorizedAccessException)
+    {
+        isConnected = false;
+
+        ShowSerialStatus(
+            "Access Denied",
+            $"Access to {selectedPort} was denied. The port may already be in use by another application or you may not have permission to access it.",
+            "error");
+
+        serialPort?.Dispose();
+        serialPort = null;
+    }
+    catch (IOException)
+    {
+        isConnected = false;
+
+        ShowSerialStatus(
+            "COM Port Unavailable",
+            $"{selectedPort} could not be accessed. The device may have been disconnected or the COM port is no longer available.",
+            "error");
+
+        serialPort?.Dispose();
+        serialPort = null;
+    }
+    catch (Exception ex)
+    {
+        isConnected = false;
+
+        ShowSerialStatus(
+            "Serial Connection Error",
+            ex.Message,
+            "error");
+
+        serialPort?.Dispose();
+        serialPort = null;
+    }
+}
+
+private void DisconnectSerial()
+{
+    try
+    {
+        if (serialPort != null)
+        {
+            if (serialPort.IsOpen)
+                serialPort.Close();
+
+            serialPort.Dispose();
+            serialPort = null;
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Serial disconnect error: {ex.Message}");
+    }
+    finally
+    {
+        isConnected = false;
+    }
+}
+
+private void SerialPort_DataReceived(
+    object sender,
+    SerialDataReceivedEventArgs e)
+{
+    try
+    {
+        if (serialPort == null || !serialPort.IsOpen)
+            return;
+
+        string data = serialPort.ReadExisting();
+
+        if (!string.IsNullOrEmpty(data))
+        {
+            InvokeAsync(() =>
+            {
+                serialOutput += data;
+
+                serialStatusTitle = "Board Connected";
+                serialStatusMessage =
+                    $"Receiving data from {serialPort?.PortName ?? selectedPort}.";
+                serialStatusType = "success";
+
+                StateHasChanged();
+            });
+        }
+    }
+    catch (Exception ex)
+    {
+        InvokeAsync(() =>
+        {
+            serialStatusTitle = "Serial Read Error";
+            serialStatusMessage = ex.Message;
+            serialStatusType = "error";
+
+            StateHasChanged();
+        });
+    }
+}
+
+
+    /* =====================================================
+       NAVIGATION
+       ===================================================== */
+
+    private void SelectSection(string section)
+    {
+        activeSection = section;
+    }
+    public void Dispose()
+{
+    if (portCheckTimer != null)
+    {
+        portCheckTimer.Stop();
+        portCheckTimer.Elapsed -= CheckSerialPortsTimer;
+        portCheckTimer.Dispose();
+        portCheckTimer = null;
+    }
+}
+
+}

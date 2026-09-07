@@ -1,0 +1,1010 @@
+/* =========================================================
+   RFD TOOLS - MAIN LAYOUT
+   MainLayout.razor.css
+   ========================================================= */
+
+
+/* =========================================================
+   APPLICATION ROOT + THEME VARIABLES
+   ========================================================= */
+
+.rfd-app {
+    width: 100vw;
+    height: 100vh;
+
+    display: grid;
+    grid-template-columns: 355px minmax(0, 1fr) 345px;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+
+    /* Default = DARK */
+    --background: #1f1f1f;
+    --sidebar-background: #141414;
+    --surface: #414141;
+    --surface-hover: #4a4a4a;
+
+    --text: #ffffff;
+    --secondary-text: #dddddd;
+
+    --border: #414141;
+
+    --select-background: #414141;
+
+    --purple: #32109f;
+
+    background-color: var(--background);
+    color: var(--text);
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+.rfd-app.dark-theme {
+    --background: #1f1f1f;
+    --sidebar-background: #141414;
+
+    --surface: #414141;
+    --surface-hover: #4a4a4a;
+
+    --text: #ffffff;
+    --secondary-text: #dddddd;
+
+    --border: #414141;
+
+    --select-background: #414141;
+
+    --purple: #32109f;
+}
+
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+.rfd-app.light-theme {
+    --background: #f2f2f2;
+    --sidebar-background: #ffffff;
+
+    --surface: #e2e2e2;
+    --surface-hover: #d5d5d5;
+
+    --text: #202020;
+    --secondary-text: #555555;
+
+    --border: #c8c8c8;
+
+    --select-background: #ffffff;
+
+    --purple: #32109f;
+}
+
+
+/* =========================================================
+   LEFT SIDEBAR
+   ========================================================= */
+
+.rfd-sidebar {
+    width: 355px;
+    height: 100vh;
+
+    box-sizing: border-box;
+
+    background-color: var(--sidebar-background);
+
+    border-right: 1px solid var(--border);
+
+    padding: 12px 10px;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.rfd-logo {
+    height: 63px;
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+.dtri-logo {
+    display: block;
+
+    width: 150px;
+    height: auto;
+
+    max-height: 58px;
+
+    object-fit: contain;
+}
+
+/* =========================================================
+   SERIAL / TCP TABS
+   ========================================================= */
+
+.connection-tabs {
+    width: 100%;
+    height: 52px;
+
+    display: flex;
+
+    margin-bottom: 8px;
+}
+
+.connection-tab {
+    flex: 1;
+
+    height: 52px;
+
+    border: 1px solid #111111;
+
+    background: #929292;
+
+    color: #333333;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.connection-tab:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.connection-tab:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.connection-tab.active {
+    background-color: var(--purple);
+
+    color: #ffffff;
+}
+
+
+/* Light theme inactive tab */
+
+.rfd-app.light-theme .connection-tab:not(.active) {
+    background-color: #d1d1d1;
+    color: #333333;
+}
+
+
+/* =========================================================
+   CONNECTION FORM
+   ========================================================= */
+
+.connection-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.connection-form label {
+    margin-bottom: 8px;
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    transition: color 0.2s ease;
+}
+
+.connection-form select {
+    width: 100%;
+    height: 36px;
+
+    box-sizing: border-box;
+
+    margin-bottom: 9px;
+
+    padding: 0 13px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 5px;
+
+    background-color: var(--select-background);
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    outline: none;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.connection-form select:focus {
+    border-color: var(--purple);
+}
+
+
+/* =========================================================
+   CONNECT BUTTON
+   ========================================================= */
+
+.connect-button {
+    width: 100%;
+    height: 54px;
+
+    margin-top: 1px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.connect-button:hover {
+    background-color: var(--surface-hover);
+}
+
+
+/* =========================================================
+   LEFT NAVIGATION
+   ========================================================= */
+
+.rfd-navigation {
+    width: 100%;
+
+    margin-top: 28px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.rfd-nav-item {
+    width: 100%;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 0 20px;
+
+    box-sizing: border-box;
+
+    border: none;
+
+    background-color: transparent;
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.rfd-nav-item:hover {
+    background-color: var(--surface-hover);
+}
+
+.rfd-nav-item.selected {
+    background-color: var(--purple);
+
+    color: #ffffff;
+}
+
+.nav-icon {
+    width: 24px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    font-size: 23px;
+
+    color: currentColor;
+}
+
+
+/* =========================================================
+   CENTER MAIN AREA
+   ========================================================= */
+
+.rfd-main {
+    position: relative;
+
+    min-width: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    box-sizing: border-box;
+
+    padding: 0 14px;
+
+    background-color: var(--background);
+
+    color: var(--text);
+
+    overflow: hidden;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* =========================================================
+   SETTINGS HEADER
+   ========================================================= */
+
+.settings-header {
+    width: 100%;
+
+    height: 76px;
+
+    display: flex;
+
+    align-items: center;
+
+    box-sizing: border-box;
+
+    color: var(--text);
+
+    font-size: 48px;
+
+    font-weight: 300;
+
+    transition: color 0.2s ease;
+
+    box-sizing: border-box;
+
+    justify-content: space-between;
+}
+
+
+/* =========================================================
+   DEVICE SELECT + REMOTE SCAN
+   ========================================================= */
+
+.settings-toolbar {
+    width: 100%;
+
+    height: 51px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        190px;
+
+    gap: 10px;
+}
+
+.device-select {
+    width: 100%;
+    height: 51px;
+
+    box-sizing: border-box;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    background-color: var(--select-background);
+
+    color: var(--text);
+
+    padding: 0 12px;
+
+    font-size: 16px;
+
+    outline: none;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.device-select:focus {
+    border-color: var(--purple);
+}
+
+
+/* =========================================================
+   TOOL BUTTONS
+   ========================================================= */
+
+.tool-button {
+    height: 51px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.tool-button:hover {
+    background-color: var(--surface-hover);
+}
+
+.tool-button:focus-visible {
+    outline: 2px solid var(--purple);
+
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   SETTINGS ACTION BUTTONS
+   ========================================================= */
+
+.settings-actions {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-top: 12px;
+}
+
+.settings-actions .tool-button {
+    width: 100%;
+}
+
+
+/* =========================================================
+   EMPTY MESSAGE
+   ========================================================= */
+
+.empty-state {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 61%;
+
+    text-align: center;
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    pointer-events: none;
+
+    transition: color 0.2s ease;
+}
+
+
+/* =========================================================
+   RIGHT SERIAL MONITOR + INFORMATION
+   ========================================================= */
+
+.serial-output {
+    width: 345px;
+    height: 100vh;
+
+    box-sizing: border-box;
+
+    background-color: var(--background);
+    color: var(--text);
+
+    border-left: 1px solid var(--border);
+
+    display: grid;
+    grid-template-rows: 60% 40%;
+
+    overflow: hidden;
+
+    padding: 0;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+/* =========================================================
+   SERIAL MONITOR - TOP 60%
+   ========================================================= */
+
+.serial-monitor-panel {
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.serial-output-title {
+    flex: 0 0 auto;
+
+    padding: 10px 12px;
+
+    font-size: 14px;
+
+    color: var(--text);
+}
+
+
+.serial-monitor-content {
+    flex: 1;
+
+    min-height: 0;
+
+    padding: 0 12px 12px 12px;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+.serial-monitor-content pre {
+    margin: 0;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    font-family:
+        Consolas,
+        "Courier New",
+        monospace;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    color: var(--text);
+}
+
+
+.serial-monitor-empty {
+    padding-top: 10px;
+
+    font-size: 12px;
+
+    color: var(--secondary-text);
+}
+
+
+/* =========================================================
+   INFORMATION - BOTTOM 40%
+   ========================================================= */
+
+.serial-information-panel {
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   INFORMATION HEADER
+   ========================================================= */
+
+.information-header {
+    flex: 0 0 auto;
+
+    height: 42px;
+
+    padding: 0 12px;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   CLEAR BUTTON
+   ========================================================= */
+
+.information-clear-button {
+    border: none;
+
+    border-radius: 5px;
+
+    padding: 6px 12px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+
+.information-clear-button:hover {
+    background-color: var(--surface-hover);
+}
+
+
+.information-clear-button:focus-visible {
+    outline: 2px solid var(--purple);
+
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   INFORMATION CONTENT
+   ========================================================= */
+
+.information-content {
+    flex: 1;
+
+    min-height: 0;
+
+    padding: 12px;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   INFORMATION MESSAGE
+   ========================================================= */
+
+.serial-info-box {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid;
+
+    border-radius: 8px;
+
+    display: flex;
+
+    gap: 10px;
+
+    align-items: flex-start;
+}
+
+
+.serial-info-box.error {
+    border-color: #d9534f;
+}
+
+
+.serial-info-box.warning {
+    border-color: #e0a800;
+}
+
+
+.serial-info-box.success {
+    border-color: #28a745;
+}
+
+
+.serial-info-box.info {
+    border-color: #6c757d;
+}
+
+
+.serial-info-icon {
+    flex: 0 0 auto;
+
+    width: 20px;
+
+    font-size: 17px;
+
+    line-height: 1.4;
+}
+
+
+.serial-info-content {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.serial-info-title {
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 5px;
+}
+
+
+.serial-info-message {
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    color: var(--secondary-text);
+
+    word-break: break-word;
+}
+
+
+.information-empty {
+    font-size: 12px;
+
+    color: var(--secondary-text);
+
+    padding: 4px 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .rfd-app {
+        grid-template-columns:
+            280px
+            minmax(0, 1fr)
+            280px;
+    }
+
+    .rfd-sidebar {
+        width: 280px;
+    }
+
+    .serial-output {
+        width: 280px;
+    }
+
+    .settings-header {
+        font-size: 40px;
+    }
+}
+
+
+@media (max-width: 750px) {
+
+    .rfd-app {
+        grid-template-columns:
+            230px
+            minmax(0, 1fr);
+    }
+
+    .rfd-sidebar {
+        width: 230px;
+    }
+
+    .serial-output {
+        display: none;
+    }
+
+    .settings-actions {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+   CONNECTED COM PORT
+   ========================================================= */
+
+.connected-port {
+    font-weight: bold;
+}
+
+/* =========================================================
+   THEME SWITCH
+   ========================================================= */
+
+.theme-switch-wrapper {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    height: 100%;
+    padding-right: 8px;
+
+    flex-shrink: 0;
+}
+
+
+/* SUN / MOON ICONS */
+
+.theme-label {
+    font-size: 18px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+
+    color: var(--secondary-text);
+
+    flex: 0 0 auto;
+
+    transition: color 0.2s ease;
+}
+
+
+/* SWITCH */
+
+.theme-switch {
+    position: relative;
+
+    display: inline-block;
+
+    width: 46px;
+    height: 24px;
+
+    flex: 0 0 46px;
+}
+
+
+/* HIDE REAL CHECKBOX */
+
+.theme-switch input {
+    position: absolute;
+
+    width: 0;
+    height: 0;
+
+    opacity: 0;
+}
+
+
+/* SWITCH BACKGROUND */
+
+.theme-slider {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: block;
+
+    cursor: pointer;
+
+    background-color: #666666;
+
+    border-radius: 24px;
+
+    transition:
+        background-color 0.2s ease;
+}
+
+
+/* WHITE CIRCLE / KNOB */
+
+.theme-slider::before {
+    content: "";
+
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+
+    left: 3px;
+    top: 3px;
+
+    background-color: #ffffff;
+
+    border-radius: 50%;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+/* DARK THEME = CHECKED */
+
+.theme-switch input:checked + .theme-slider {
+    background-color: var(--purple);
+}
+
+
+/* MOVE KNOB WHEN CHECKED */
+
+.theme-switch input:checked + .theme-slider::before {
+    transform: translateX(22px);
+}
+
+
+/* KEYBOARD FOCUS */
+
+.theme-switch input:focus-visible + .theme-slider {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+}
